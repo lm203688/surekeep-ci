@@ -3,7 +3,7 @@
     "name": "SureKeep",
     "slug": "surekeep-vault",
     "owner": "lm203688s-team",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -11,7 +11,7 @@
     "ios": {
       "bundleIdentifier": "com.lixing.surekeep",
       "icon": "./assets/icon.png",
-      "buildNumber": "8",
+      "buildNumber": "9",
       "supportsTablet": true,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
