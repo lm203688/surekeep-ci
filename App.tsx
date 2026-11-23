@@ -31,6 +31,7 @@ import {
 import { exportVault, type ExportFormat } from './src/platform/export';
 import FeedbackModal from './src/FeedbackModal';
 import { useDuo } from './src/duo';
+import AiAssist from './src/aiAssist';
 
 const INS_CATEGORIES: InsuranceCategory[] = ['auto', 'home', 'health', 'life', 'phone', 'travel', 'other'];
 const DOC_TYPES: DocType[] = ['passport', 'id', 'driver-license', 'residence-permit', 'certificate', 'contract', 'other'];
@@ -47,6 +48,7 @@ export default function App() {
   return (
     <View style={{ flex: 1, backgroundColor: '#F7F8F5', paddingRight: duo.gutter }}>
       <AppScreens />
+      <AiAssist app="SureKeep" hint="Home inventory and warranty records: what to log so a claim goes through." gutter={duo.gutter} />
     </View>
   );
 }
