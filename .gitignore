@@ -1,0 +1,12 @@
+node_modules/
+.expo/
+ios/
+android/
+dist/
+credentials/
+credentials.json
+*.ipa
+*.p12
+*.mobileprovision
+*.log
+.DS_Store
