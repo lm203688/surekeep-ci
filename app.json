@@ -26,6 +26,7 @@
       }
     },
     "plugins": [
+    "./plugins/withAppIntents.cjs",
       "./plugins/withUIScene.cjs",
       [
         "expo-build-properties",
