@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "SureKeep",
+    "slug": "surekeep-vault",
+    "owner": "lm203688s-team",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "icon": "./assets/icon.png",
+    "ios": {
+      "bundleIdentifier": "com.lixing.surekeep",
+      "icon": "./assets/icon.png",
+      "buildNumber": "7",
+      "supportsTablet": true,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIRequiredDeviceCapabilities": [
+          "arm64"
+        ]
+      },
+      "privacyManifests": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyAccessedAPITypes": []
+      }
+    },
+    "plugins": [
+      "./plugins/withUIScene.cjs",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ],
+      "./plugins/with-pod-deployment-target.js"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": "38a5c8bb-a128-49d7-ba47-ed9e032e1625"
+      }
+    }
+  }
+}
