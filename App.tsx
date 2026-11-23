@@ -29,6 +29,7 @@ import {
   deleteItem, deleteWarranty, deleteInsurance, deleteDoc, clearAll,
 } from './src/platform/storage';
 import { exportVault, type ExportFormat } from './src/platform/export';
+import FeedbackModal from './src/FeedbackModal';
 
 const INS_CATEGORIES: InsuranceCategory[] = ['auto', 'home', 'health', 'life', 'phone', 'travel', 'other'];
 const DOC_TYPES: DocType[] = ['passport', 'id', 'driver-license', 'residence-permit', 'certificate', 'contract', 'other'];
@@ -45,6 +46,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [editor, setEditor] = useState<EditorTarget | null>(null);
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   useEffect(() => {
     loadVault().then((v) => { setVault(v); setLoading(false); });
@@ -217,10 +219,15 @@ export default function App() {
             <Pressable style={styles.dangerBtn} onPress={handleClear}>
               <Text style={styles.dangerText}>Delete all data on this device</Text>
             </Pressable>
+            <Pressable onPress={() => setShowFeedback(true)} accessibilityRole="button" style={{ paddingVertical: 12 }}>
+              <Text style={styles.link}>Send feedback</Text>
+            </Pressable>
             <Text style={styles.version}>SureKeep 0.2.0 · no account, no subscription, no ads</Text>
           </ScrollView>
         </SafeAreaView>
       </Modal>
+
+      <FeedbackModal visible={showFeedback} onClose={() => setShowFeedback(false)} context="privacy" />
     </SafeAreaView>
   );
 }
