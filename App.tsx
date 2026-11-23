@@ -30,6 +30,7 @@ import {
 } from './src/platform/storage';
 import { exportVault, type ExportFormat } from './src/platform/export';
 import FeedbackModal from './src/FeedbackModal';
+import { useDuo } from './src/duo';
 
 const INS_CATEGORIES: InsuranceCategory[] = ['auto', 'home', 'health', 'life', 'phone', 'travel', 'other'];
 const DOC_TYPES: DocType[] = ['passport', 'id', 'driver-license', 'residence-permit', 'certificate', 'contract', 'other'];
@@ -42,6 +43,15 @@ type EditorTarget =
   | { kind: 'doc'; data: ImportantDoc };
 
 export default function App() {
+  const duo = useDuo();
+  return (
+    <View style={{ flex: 1, backgroundColor: '#F7F8F5', paddingRight: duo.gutter }}>
+      <AppScreens />
+    </View>
+  );
+}
+
+function AppScreens() {
   const [vault, setVault] = useState<D2Vault>(emptyVault());
   const [loading, setLoading] = useState(true);
   const [editor, setEditor] = useState<EditorTarget | null>(null);
