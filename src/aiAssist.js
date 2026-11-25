@@ -39,6 +39,28 @@ export async function askAi(prompt, instructions) {
   }
 }
 
+/** Structured answer shaped by the native @Generable schema: { headline, detail } or null. */
+export async function askStructured(prompt, instructions) {
+  if (!native || typeof native.respondStructured !== 'function') return null;
+  try {
+    const r = await native.respondStructured(prompt, instructions);
+    if (!r || !r.ok) return null;
+    if (!r.headline && !r.detail) return null;
+    return { headline: r.headline || '', detail: r.detail || '', backend: r.backend || 'on-device' };
+  } catch (e) {
+    return null;
+  }
+}
+
+/** True when this build can return the headline + detail schema. */
+export function supportsStructured() {
+  try {
+    return !!(native && typeof native.supportsStructured === 'function' && native.supportsStructured());
+  } catch (e) {
+    return false;
+  }
+}
+
 const REASON_COPY = {
   'apple-intelligence-off':
     'Apple Intelligence is switched off. Turn it on in Settings > Apple Intelligence & Siri.',
@@ -63,7 +85,8 @@ export default function AiAssist(props) {
 
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
-  const [answer, setAnswer] = useState('');
+  const [answerHead, setAnswerHead] = useState('');
+  const [answerDetail, setAnswerDetail] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [state, setState] = useState(() => aiAvailability());
@@ -89,10 +112,22 @@ export default function AiAssist(props) {
     if (!prompt || busy) return;
     setBusy(true);
     setError('');
-    setAnswer('');
+    setAnswerHead('');
+    setAnswerDetail('');
+    // The schema path gives a bold lead line plus the working detail, which is what a
+    // trade answer is for. It is tried first and silently falls back to free text.
+    if (supportsStructured()) {
+      const s = await askStructured(prompt, instructions);
+      if (s && (s.headline || s.detail)) {
+        setAnswerHead(s.headline);
+        setAnswerDetail(s.detail);
+        setBusy(false);
+        return;
+      }
+    }
     const text = await askAi(prompt, instructions);
     if (text) {
-      setAnswer(text);
+      setAnswerDetail(text);
     } else {
       setError('No answer came back. Check that Apple Intelligence is on and the model is ready.');
     }
@@ -154,10 +189,13 @@ export default function AiAssist(props) {
               )}
             </Pressable>
 
-            {(!!answer || !!error) && (
+            {(!!answerHead || !!answerDetail || !!error) && (
               <ScrollView style={styles.resultBox}>
-                <Text style={answer ? styles.answer : styles.err}>{answer || error}</Text>
-                {!!answer && (
+                {!!answerHead && <Text style={styles.headline}>{answerHead}</Text>}
+                <Text style={answerDetail ? styles.answer : styles.err}>
+                  {answerDetail || error}
+                </Text>
+                {!!answerDetail && (
                   <Text style={styles.disclaimer}>AI can be wrong. Verify before you act on it.</Text>
                 )}
               </ScrollView>
@@ -224,7 +262,8 @@ const styles = StyleSheet.create({
   primaryDim: { backgroundColor: '#9DB8B4' },
   primaryText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
   resultBox: { marginTop: 14, maxHeight: 320 },
-  answer: { fontSize: 15, lineHeight: 22, color: '#111827' },
+  headline: { fontSize: 17, fontWeight: '700', color: '#111827', lineHeight: 23 },
+  answer: { fontSize: 15, lineHeight: 22, color: '#111827', marginTop: 6 },
   err: { fontSize: 14, lineHeight: 20, color: '#B42318' },
   disclaimer: { marginTop: 10, fontSize: 12, color: '#7A8481' },
 });
