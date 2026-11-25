@@ -141,6 +141,15 @@ jobs:
           grep -n "class SceneDelegate" ios/*/AppDelegate.swift || { echo "FAIL: SceneDelegate missing"; exit 1; }
           echo "OK: signed ipa adopts UIScene lifecycle"
 
+
+          echo "== app intents gate =="
+          test -d "$APP/Metadata.appintents" || { echo "FAIL: no App Intents metadata in signed ipa"; exit 1; }
+          ls -l "$APP/Metadata.appintents" || true
+          for I in DocExpiryIntent DocValidityIntent; do
+            grep -raq "$I" "$APP/Metadata.appintents" || { echo "FAIL: intent $I not compiled into metadata"; exit 1; }
+          done
+          strings -a "$APP/Metadata.appintents"/* | grep -o "[A-Za-z]*Intent" | sort -u | head -25 || true
+          echo "OK: parameterized app intents compiled into the bundle"
       - name: Upload to App Store Connect
         if: ${{ inputs.upload }}
         env:
