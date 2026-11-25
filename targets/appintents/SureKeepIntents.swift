@@ -7,16 +7,13 @@ import Foundation
 // 有效期算到期日。文档本体不读，避免在锁屏语境下泄露任何内容。
 
 @available(iOS 16.0, *)
-struct DocumentKindEntity: AppEntity, IndexedEntity {
+struct DocumentKindEntity: AppEntity {
   static var typeDisplayRepresentation: TypeDisplayRepresentation = TypeDisplayRepresentation(name: "Document kind")
   static var defaultQuery = DocumentKindQuery()
 
   let id: String
 
-  // Spotlight shows this title when the user searches system-wide; the key is a
-  // CSSearchableItemAttributeSet field, not the entity's own property name.
-  @Property(indexingKey: \.displayName)
-  var summary: String
+  let summary: String
   /// Nominal validity in months, used when only the issue date is known. 0 = no standard.
   let validityMonths: Int
 
@@ -200,3 +197,7 @@ struct SureKeepShortcuts: AppShortcutsProvider {
     )
   }
 }
+
+// Spotlight: from iOS 18 the entity is searchable system-wide by its display name.
+@available(iOS 18.0, *)
+extension DocumentKindEntity: IndexedEntity {}
